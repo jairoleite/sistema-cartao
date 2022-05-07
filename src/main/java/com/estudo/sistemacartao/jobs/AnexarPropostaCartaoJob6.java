@@ -9,29 +9,24 @@ import com.estudo.sistemacartao.services.CartaoClienteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
 @Component
-public class AnexarPropostaCartaoJob {
+@RequiredArgsConstructor
+public class AnexarPropostaCartaoJob6 {
 
     private CartaoClienteService cartaoClienteService;
     private CartaoRepository cartaoRepository;
     private PropostaCartaoRepository propostaCartaoRepository;
 
-    @Transactional
+    private TransactionTemplate transactionManager;
+
+
     @Scheduled(fixedDelay = 60_000)
-    public void execute() {
-
-        List<PropostaCartao> propostas = propostaCartaoRepository.findAllStatusOrderByDataRegistro(PropostaStatusEnum.ELEGIVEL.toString());
-        propostas.forEach(proposta -> {
-            Cartao cartao = cartaoClienteService.buscaCartaoPorPropostaId(proposta.getId());
-            cartaoRepository.save(cartao);
-
-            proposta.setCartaoUUID(cartao.getUuid());
-            propostaCartaoRepository.save(proposta);
-        });
+    public synchronized void execute() {
+        // executa lógica aqui
     }
 
 }
